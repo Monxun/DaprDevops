@@ -1,0 +1,53 @@
+---
+- hosts: all
+  become: true
+  pre_tasks:
+    - name: example pre-task
+      shell:
+      args:
+        executable: /usr/bin/bash
+        cmd: echo "Running Playbook..."
+
+
+# ////////////////////////////////////////////////////////////////////////////////////////
+#  VARIABLES
+# ////////////////////////////////////////////////////////////////////////////////////////
+  vars_files:
+  - "./vars/varsLocal.yml"
+
+  vars:
+    # local, dev, stage, or prod
+    deployment_type: local 
+
+
+# ////////////////////////////////////////////////////////////////////////////////////////
+#  ENVIRONMENT VARIABLES
+# ////////////////////////////////////////////////////////////////////////////////////////
+  environment:
+    PLAYBOOK_DIR: "{{ playbook_dir }}"
+
+
+# ////////////////////////////////////////////////////////////////////////////////////////
+#  ROLES
+# ////////////////////////////////////////////////////////////////////////////////////////
+
+# BOOTSTRAPPER ---------------------------------
+- hosts: all
+  become: true
+  roles:
+    - bootstrap
+  when: role_selector == "bootstrap"
+
+# CHILD CLUSTER CREATION -----------------------
+- hosts: all
+  become: true
+  roles:
+    - cluster
+  when: role_selector == "cluster"
+
+# APP DEPLOYMENT -------------------------------
+- hosts: all
+  become: true
+  roles:
+    - app
+  when: role_selector == "app"

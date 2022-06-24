@@ -1,0 +1,13 @@
+---
+# GLOBAL
+cloudwatch_region: us-west-2
+service_on_boot: true
+
+# EC2 VARS
+ec2_service_v1: awslog
+ec2_service_v2: awslogsd
+ec2_service_state: start
+
+# K8's VARS (WIP)
+k8s_service: awslogsd
+k8s_service_state: start
